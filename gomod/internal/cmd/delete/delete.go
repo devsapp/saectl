@@ -116,7 +116,7 @@ func NewCmdDelete(f cmdutil.Factory, streams genericclioptions.IOStreams) *cobra
 	}
 
 	deleteFlags.AddFlags(cmd)
-	//cmdutil.AddDryRunFlag(cmd)
+	cmdutil.AddDryRunFlag(cmd)
 
 	return cmd
 }
