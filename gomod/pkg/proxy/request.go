@@ -72,6 +72,7 @@ func (r HttpRequestInjector) ApplyToRequest(request *requests.CommonRequest) err
 		reqPath += "?" + query.Encode()
 	}
 	request.Domain = r.URL.Host
+	r.Header.Set("User-Agent", "saectl")
 	body := &input{
 		Path:        reqPath,
 		Method:      r.Method,
