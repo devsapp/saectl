@@ -8,8 +8,6 @@ import (
 	"time"
 
 	"github.com/spf13/cobra"
-	"k8s.io/klog/v2"
-
 	"k8s.io/apimachinery/pkg/api/errors"
 	"k8s.io/apimachinery/pkg/api/meta"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
@@ -18,6 +16,7 @@ import (
 	"k8s.io/cli-runtime/pkg/printers"
 	"k8s.io/cli-runtime/pkg/resource"
 	"k8s.io/client-go/dynamic"
+	"k8s.io/klog/v2"
 	cmdutil "k8s.io/kubectl/pkg/cmd/util"
 	cmdwait "k8s.io/kubectl/pkg/cmd/wait"
 	"k8s.io/kubectl/pkg/rawhttp"
@@ -25,6 +24,8 @@ import (
 	"k8s.io/kubectl/pkg/util/i18n"
 	"k8s.io/kubectl/pkg/util/templates"
 	"k8s.io/kubectl/pkg/util/term"
+
+	"saectl/cmd/help"
 )
 
 var (
@@ -34,33 +35,33 @@ var (
 		JSON and YAML formats are accepted. Only one type of argument may be specified: file names,
 		resources and names, or resources and label selector.`))
 
-	deleteExample = templates.Examples(i18n.T(`
+	deleteExample = templates.Examples(i18n.T(help.Wrapper(`
 		# Delete a pod using the type and name specified in pod.json
-		saectl delete -f ./pod.json
+		%s delete -f ./pod.json
 
 		# Delete resources from a directory containing kustomization.yaml - e.g. dir/kustomization.yaml
-		saectl delete -k dir
+		%s delete -k dir
 
 		# Delete resources from all files that end with '.json' - i.e. expand wildcard characters in file names
-		saectl delete -f '*.json'
+		%s delete -f '*.json'
 
 		# Delete a pod based on the type and name in the JSON passed into stdin
-		cat pod.json | saectl delete -f -
+		cat pod.json | %s delete -f -
 
 		# Delete pods and services with same names "baz" and "foo"
-		saectl delete pod,service baz foo
+		%s delete pod,service baz foo
 
 		# Delete pods and services with label name=myLabel
-		saectl delete pods,services -l name=myLabel
+		%s delete pods,services -l name=myLabel
 
 		# Delete a pod with minimal delay
-		saectl delete pod foo --now
+		%s delete pod foo --now
 
 		# Force delete a pod on a dead node
-		saectl delete pod foo --force
+		%s delete pod foo --force
 
 		# Delete all pods
-		saectl delete pods --all`))
+		%s delete pods --all`, 9)))
 )
 
 type DeleteOptions struct {

@@ -32,6 +32,8 @@ import (
 	"k8s.io/kubectl/pkg/util/templates"
 	"k8s.io/utils/exec"
 	"sigs.k8s.io/yaml"
+
+	"saectl/cmd/help"
 )
 
 var (
@@ -52,12 +54,12 @@ var (
 		 >1
 		saectl or diff failed with an error.`))
 
-	diffExample = templates.Examples(i18n.T(`
+	diffExample = templates.Examples(i18n.T(help.Wrapper(`
 		# Diff resources included in pod.json
-		saectl diff -f pod.json
+		%s diff -f pod.json
 
 		# Diff file read from stdin
-		cat service.yaml | saectl diff -f -`))
+		cat service.yaml | %s diff -f -`, 2)))
 )
 
 // Number of times we try to diff before giving-up

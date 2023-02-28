@@ -3,6 +3,8 @@ package cmd
 import (
 	"fmt"
 	"os"
+	"saectl/cmd/help"
+	soptions "saectl/internal/cmd/options"
 	"saectl/internal/cmd/version"
 
 	"github.com/spf13/cobra"
@@ -25,7 +27,6 @@ import (
 	"saectl/internal/cmd/get"
 	"saectl/internal/cmd/label"
 	"saectl/internal/cmd/logs"
-	"saectl/internal/cmd/replace"
 	"saectl/internal/cmd/scale"
 	"saectl/internal/cmd/set"
 	"saectl/internal/cmd/util"
@@ -58,13 +59,13 @@ func NewCommand(o CtlOption) *cobra.Command {
 	warningsAsErrors := false
 	// Parent command to which all subcommands are added.
 	cmds := &cobra.Command{
-		Use:   "saectl",
-		Short: i18n.T("saectl controls the Serverless Application Engine manager"),
-		Long: templates.LongDesc(`
-      saectl controls the Serverless Application Engine manager.
+		Use:   help.RootCommand,
+		Short: i18n.T(fmt.Sprintf("%s controls the Serverless Application Engine manager", help.CommandName)),
+		Long: templates.LongDesc(fmt.Sprintf(`
+      %s controls the Serverless Application Engine manager.
 
       Find more information at:
-            https://help.aliyun.com/product/118957.html`),
+            https://help.aliyun.com/product/118957.html`, help.CommandName)),
 		Run: runHelp,
 
 		PersistentPreRunE: func(cmd *cobra.Command, args []string) error {
@@ -113,7 +114,7 @@ func NewCommand(o CtlOption) *cobra.Command {
 		{
 			Message: "Basic Commands (Intermediate):",
 			Commands: []*cobra.Command{
-				get.NewCmdGet("saectl", f, o.IOStreams),
+				get.NewCmdGet(help.CommandName, f, o.IOStreams),
 				edit.NewCmdEdit(f, o.IOStreams),
 				delete.NewCmdDelete(f, o.IOStreams),
 			},
@@ -127,7 +128,7 @@ func NewCommand(o CtlOption) *cobra.Command {
 		{
 			Message: "Troubleshooting and Debugging Commands:",
 			Commands: []*cobra.Command{
-				describe.NewCmdDescribe("saectl", f, o.IOStreams),
+				describe.NewCmdDescribe(help.CommandName, f, o.IOStreams),
 				exec.NewCmdExec(aliCloudFactory, o.IOStreams),
 				logs.NewCmdLogs(f, o.IOStreams),
 			},
@@ -136,15 +137,15 @@ func NewCommand(o CtlOption) *cobra.Command {
 			Message: "Advanced Commands:",
 			Commands: []*cobra.Command{
 				diff.NewCmdDiff(f, o.IOStreams),
-				apply.NewCmdApply("saectl", f, o.IOStreams),
-				replace.NewCmdReplace(f, o.IOStreams),
+				apply.NewCmdApply(help.CommandName, f, o.IOStreams),
+				//replace.NewCmdReplace(f, o.IOStreams),
 			},
 		},
 		{
 			Message: "Settings Commands:",
 			Commands: []*cobra.Command{
 				label.NewCmdLabel(f, o.IOStreams),
-				annotate.NewCmdAnnotate("saectl", f, o.IOStreams),
+				annotate.NewCmdAnnotate(help.CommandName, f, o.IOStreams),
 			},
 		},
 		{
@@ -156,12 +157,14 @@ func NewCommand(o CtlOption) *cobra.Command {
 	}
 	groups.Add(cmds)
 
-	filters := []string{"options"}
+	filters := []string{"options", "completion"}
 
 	templates.ActsAsRootCommand(cmds, filters, groups...)
 
 	cmds.AddCommand(apiresources.NewCmdAPIResources(f, o.IOStreams))
+	cmds.AddCommand(soptions.NewCmdOptions(o.IOStreams.Out))
 	cmds.SetGlobalNormalizationFunc(cliflag.WordSepNormalizeFunc)
+
 	return cmds
 }
 

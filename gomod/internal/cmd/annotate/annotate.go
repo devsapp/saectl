@@ -7,24 +7,24 @@ import (
 
 	jsonpatch "github.com/evanphx/json-patch"
 	"github.com/spf13/cobra"
-	"k8s.io/klog/v2"
-
 	"k8s.io/apimachinery/pkg/api/meta"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/apis/meta/v1/unstructured/unstructuredscheme"
 	"k8s.io/apimachinery/pkg/runtime"
 	"k8s.io/apimachinery/pkg/types"
 	"k8s.io/apimachinery/pkg/util/json"
-
 	"k8s.io/cli-runtime/pkg/genericclioptions"
 	"k8s.io/cli-runtime/pkg/printers"
 	"k8s.io/cli-runtime/pkg/resource"
+	"k8s.io/klog/v2"
 	cmdutil "k8s.io/kubectl/pkg/cmd/util"
 	"k8s.io/kubectl/pkg/polymorphichelpers"
 	"k8s.io/kubectl/pkg/scheme"
 	"k8s.io/kubectl/pkg/util/completion"
 	"k8s.io/kubectl/pkg/util/i18n"
 	"k8s.io/kubectl/pkg/util/templates"
+
+	"saectl/cmd/help"
 )
 
 // AnnotateOptions have the data required to perform the annotate operation
@@ -76,26 +76,26 @@ var (
 		If --resource-version is specified and does not match the current resource version on
 		the server the command will fail.`))
 
-	annotateExample = templates.Examples(i18n.T(`
+	annotateExample = templates.Examples(i18n.T(help.Wrapper(`
     # Update pod 'foo' with the annotation 'description' and the value 'my frontend'
     # If the same annotation is set multiple times, only the last value will be applied
-    saectl annotate pods foo description='my frontend'
+    %s annotate pods foo description='my frontend'
 
     # Update a pod identified by type and name in "pod.json"
-    saectl annotate -f pod.json description='my frontend'
+    %s annotate -f pod.json description='my frontend'
 
     # Update pod 'foo' with the annotation 'description' and the value 'my frontend running nginx', overwriting any existing value
-    saectl annotate --overwrite pods foo description='my frontend running nginx'
+    %s annotate --overwrite pods foo description='my frontend running nginx'
 
     # Update all pods in the namespace
-    saectl annotate pods --all description='my frontend running nginx'
+    %s annotate pods --all description='my frontend running nginx'
 
     # Update pod 'foo' only if the resource is unchanged from version 1
-    saectl annotate pods foo description='my frontend running nginx' --resource-version=1
+    %s annotate pods foo description='my frontend running nginx' --resource-version=1
 
     # Update pod 'foo' by removing an annotation named 'description' if it exists
     # Does not require the --overwrite flag
-    saectl annotate pods foo description-`))
+    %s annotate pods foo description-`, 6)))
 )
 
 // NewAnnotateOptions creates the options for annotate
@@ -140,7 +140,7 @@ func NewCmdAnnotate(parent string, f cmdutil.Factory, ioStreams genericclioption
 	cmd.Flags().StringVar(&o.resourceVersion, "resource-version", o.resourceVersion, i18n.T("If non-empty, the annotation update will only succeed if this is the current resource-version for the object. Only valid when specifying a single resource."))
 	usage := "identifying the resource to update the annotation"
 	cmdutil.AddFilenameOptionFlags(cmd, &o.FilenameOptions, usage)
-	//cmdutil.AddDryRunFlag(cmd)
+	cmdutil.AddDryRunFlag(cmd)
 	//cmdutil.AddFieldManagerFlagVar(cmd, &o.fieldManager, "kubectl-annotate")
 	cmdutil.AddLabelSelectorFlagVar(cmd, &o.selector)
 

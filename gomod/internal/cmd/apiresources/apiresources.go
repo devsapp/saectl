@@ -8,7 +8,6 @@ import (
 	"strings"
 
 	"github.com/spf13/cobra"
-
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/runtime/schema"
 	"k8s.io/apimachinery/pkg/util/errors"
@@ -18,27 +17,26 @@ import (
 	cmdutil "k8s.io/kubectl/pkg/cmd/util"
 	"k8s.io/kubectl/pkg/util/i18n"
 	"k8s.io/kubectl/pkg/util/templates"
+
+	"saectl/cmd/help"
 )
 
 var (
-	apiresourcesExample = templates.Examples(`
+	apiresourcesExample = templates.Examples(help.Wrapper(`
 		# Print the supported API resources
-		saectl api-resources
+		%s api-resources
 
 		# Print the supported API resources with more information
-		saectl api-resources -o wide
+		%s api-resources -o wide
 
 		# Print the supported API resources sorted by a column
-		saectl api-resources --sort-by=name
+		%s api-resources --sort-by=name
 
 		# Print the supported namespaced resources
-		saectl api-resources --namespaced=true
+		%s api-resources --namespaced=true
 
 		# Print the supported non-namespaced resources
-		saectl api-resources --namespaced=false
-
-		# Print the supported API resources with a specific APIGroup
-		saectl api-resources --api-group=rbac.authorization.k8s.io`)
+		%s api-resources --namespaced=false`, 5))
 )
 
 // APIResourceOptions is the start of the data required to perform the operation.

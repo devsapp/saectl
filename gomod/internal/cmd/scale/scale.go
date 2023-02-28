@@ -6,19 +6,20 @@ import (
 	"time"
 
 	"github.com/spf13/cobra"
-	"k8s.io/klog/v2"
-
 	"k8s.io/apimachinery/pkg/api/meta"
 	"k8s.io/apimachinery/pkg/types"
 	"k8s.io/cli-runtime/pkg/genericclioptions"
 	"k8s.io/cli-runtime/pkg/printers"
 	"k8s.io/cli-runtime/pkg/resource"
 	"k8s.io/client-go/kubernetes"
+	"k8s.io/klog/v2"
 	cmdutil "k8s.io/kubectl/pkg/cmd/util"
 	"k8s.io/kubectl/pkg/scale"
 	"k8s.io/kubectl/pkg/util/completion"
 	"k8s.io/kubectl/pkg/util/i18n"
 	"k8s.io/kubectl/pkg/util/templates"
+
+	"saectl/cmd/help"
 )
 
 var (
@@ -31,18 +32,18 @@ var (
 		scale is attempted, and it is guaranteed that the precondition holds true when the
 		scale is sent to the server.`))
 
-	scaleExample = templates.Examples(i18n.T(`
+	scaleExample = templates.Examples(i18n.T(help.Wrapper(`
 		# Scale a deployment named 'demo' to 3
-		saectl scale --replicas=3 deployment demo
+		%s scale --replicas=3 deployment demo
 
 		# Scale a resource identified by type and name specified in "foo.yaml" to 3
-		saectl scale --replicas=3 -f foo.yaml
+		%s scale --replicas=3 -f foo.yaml
 
 		# If the deployment named mysql's current size is 2, scale mysql to 3
-		saectl scale --current-replicas=2 --replicas=3 deployment/mysql
+		%s scale --current-replicas=2 --replicas=3 deployment/mysql
 
 		# Scale multiple deployment
-		saectl scale --replicas=5 deployment/foo deployment/bar deployment/baz`))
+		%s scale --replicas=5 deployment/foo deployment/bar deployment/baz`, 4)))
 )
 
 type ScaleOptions struct {

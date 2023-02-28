@@ -3,13 +3,14 @@ package edit
 // the code copy and paste from https://github.com/kubernetes/kubectl/blob/master/pkg/cmd/edit/edit.go
 import (
 	"github.com/spf13/cobra"
-
 	"k8s.io/cli-runtime/pkg/genericclioptions"
 	cmdutil "k8s.io/kubectl/pkg/cmd/util"
 	"k8s.io/kubectl/pkg/cmd/util/editor"
 	"k8s.io/kubectl/pkg/util/completion"
 	"k8s.io/kubectl/pkg/util/i18n"
 	"k8s.io/kubectl/pkg/util/templates"
+
+	"saectl/cmd/help"
 )
 
 var (
@@ -37,9 +38,9 @@ var (
 		to apply your changes to the newer version of the resource, or update your temporary
 		saved copy to include the latest resource version.`))
 
-	editExample = templates.Examples(i18n.T(`
+	editExample = templates.Examples(i18n.T(help.Wrapper(`
 		# Edit the deployment named 'demo'
-		saectl edit deployment demo`))
+		%s edit deployment demo`, 1)))
 )
 
 // NewCmdEdit creates the `edit` command

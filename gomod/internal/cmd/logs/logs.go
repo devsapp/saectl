@@ -28,7 +28,6 @@ import (
 	"time"
 
 	"github.com/spf13/cobra"
-
 	corev1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/runtime"
@@ -41,6 +40,8 @@ import (
 	"k8s.io/kubectl/pkg/util/completion"
 	"k8s.io/kubectl/pkg/util/i18n"
 	"k8s.io/kubectl/pkg/util/templates"
+
+	"saectl/cmd/help"
 )
 
 const (
@@ -52,15 +53,15 @@ var (
 		Print the logs for a container in a pod or specified resource. 
 		If the pod has only one container, the container name is optional.`))
 
-	logsExample = templates.Examples(i18n.T(`
+	logsExample = templates.Examples(i18n.T(help.Wrapper(`
 		# Return snapshot logs from pod nginx with only one container
-		saectl logs nginx
+		%s logs nginx
 
 		# Display only the most recent 20 lines of output in pod nginx
-		saectl logs --tail=20 nginx
+		%s logs --tail=20 nginx
 
 		# Show all logs from pod nginx written in the last hour
-		saectl logs --since=1h nginx`))
+		%s logs --since=1h nginx`, 3)))
 
 	selectorTail    int64 = 10
 	logsUsageErrStr       = fmt.Sprintf("expected '%s'.\nPOD or TYPE/NAME is a required argument for the logs command", logsUsageStr)

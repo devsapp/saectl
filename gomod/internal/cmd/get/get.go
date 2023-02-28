@@ -12,6 +12,8 @@ import (
 	cmdutil "k8s.io/kubectl/pkg/cmd/util"
 	"k8s.io/kubectl/pkg/util/i18n"
 	"k8s.io/kubectl/pkg/util/templates"
+
+	"saectl/cmd/help"
 )
 
 const (
@@ -33,27 +35,27 @@ var (
 		By specifying the output as 'template' and providing a Go template as the value
 		of the --template flag, you can filter the attributes of the fetched resources.`)
 
-	getExample = templates.Examples(`
+	getExample = templates.Examples(help.Wrapper(`
 		# List all pods in ps output format
-		saectl get pods
+		%s get pods
 
 		# List all pods in ps output format with more information (such as node name)
-		saectl get pods -o wide
+		%s get pods -o wide
 
 		# List deployments in JSON output format, in the "v1" version of the "apps" API group
-		saectl get deployments.v1.apps -o json
+		%s get deployments.v1.apps -o json
 
 		# List a pod identified by type and name specified in "pod.yaml" in JSON output format
-		saectl get -f pod.yaml -o json
+		%s get -f pod.yaml -o json
 
 		# List resources from a directory with kustomization.yaml - e.g. dir/kustomization.yaml
-		saectl get -k dir/
+		%s get -k dir/
 
 		# Return only the phase value of the specified pod
-		saectl get -o template pod/web-pod-13je7 --template={{.status.phase}}
+		%s get -o template pod/web-pod-13je7 --template={{.status.phase}}
 
 		# List resource information in custom columns
-		saectl get pod test-pod -o custom-columns=CONTAINER:.spec.containers[0].name,IMAGE:.spec.containers[0].image`)
+		%s get pod test-pod -o custom-columns=CONTAINER:.spec.containers[0].name,IMAGE:.spec.containers[0].image`, 7))
 )
 
 func NewCmdGet(parent string, f cmdutil.Factory, streams genericclioptions.IOStreams) *cobra.Command {

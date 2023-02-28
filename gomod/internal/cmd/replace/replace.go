@@ -3,16 +3,14 @@ package replace
 // the code copy and paste from https://github.com/kubernetes/kubectl/blob/master/pkg/cmd/replace/replace.go
 import (
 	"fmt"
+	"github.com/spf13/cobra"
 	"io/ioutil"
+	"k8s.io/klog/v2"
 	"net/url"
 	"os"
 	"path/filepath"
 	"strings"
 	"time"
-
-	"github.com/spf13/cobra"
-
-	"k8s.io/klog/v2"
 
 	"k8s.io/apimachinery/pkg/api/errors"
 	"k8s.io/apimachinery/pkg/runtime"
@@ -28,6 +26,8 @@ import (
 	"k8s.io/kubectl/pkg/util/slice"
 	"k8s.io/kubectl/pkg/util/templates"
 	"k8s.io/kubectl/pkg/validation"
+
+	"saectl/cmd/help"
 )
 
 var (
@@ -39,18 +39,18 @@ var (
 
 		    $ saectl get TYPE NAME -o yaml`))
 
-	replaceExample = templates.Examples(i18n.T(`
+	replaceExample = templates.Examples(i18n.T(help.Wrapper(`
 		# Replace a pod using the data in pod.json
-		saectl replace -f ./pod.json
+		%s replace -f ./pod.json
 
 		# Replace a pod based on the JSON passed into stdin
-		cat pod.json | saectl replace -f -
+		cat pod.json | %s replace -f -
 
 		# Update a single-container pod's image version (tag) to v4
-		saectl get pod mypod -o yaml | sed 's/\(image: myimage\):.*$/\1:v4/' | kubectl replace -f -
+		%s get pod mypod -o yaml | sed 's/\(image: myimage\):.*$/\1:v4/' | %s replace -f -
 
 		# Force replace, delete and then re-create the resource
-		saectl replace --force -f ./pod.json`))
+		%s replace --force -f ./pod.json`, 5)))
 )
 
 var supportedSubresources = []string{}
@@ -117,9 +117,9 @@ func NewCmdReplace(f cmdutil.Factory, streams genericclioptions.IOStreams) *cobr
 	//o.DeleteFlags.AddFlags(cmd)
 	//o.RecordFlags.AddFlags(cmd)
 
-	//cmdutil.AddValidateFlags(cmd)
+	cmdutil.AddValidateFlags(cmd)
 	//cmdutil.AddApplyAnnotationFlags(cmd)
-	//cmdutil.AddDryRunFlag(cmd)
+	cmdutil.AddDryRunFlag(cmd)
 
 	//cmd.Flags().StringVar(&o.Raw, "raw", o.Raw, "Raw URI to PUT to the server.  Uses the transport specified by the kubeconfig file.")
 	//cmdutil.AddFieldManagerFlagVar(cmd, &o.fieldManager, "kubectl-replace")
