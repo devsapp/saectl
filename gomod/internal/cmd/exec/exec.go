@@ -22,6 +22,7 @@ import (
 	"k8s.io/kubectl/pkg/util/templates"
 	"k8s.io/kubectl/pkg/util/term"
 
+	"saectl/cmd/help"
 	"saectl/internal/cmd/exec/stream"
 	"saectl/internal/cmd/util"
 	"saectl/pkg/options"
@@ -29,10 +30,10 @@ import (
 )
 
 var (
-	execExample = templates.Examples(i18n.T(`
+	execExample = templates.Examples(i18n.T(help.Wrapper(`
 		# Switch to raw terminal mode; sends stdin to 'bash' in pod1 and sends stdout from 'bash' back to the client
-		saectl exec -it mypod -n myns -- /bin/bash
-`))
+		%s exec -it mypod -n myns -- /bin/bash
+`, 1)))
 )
 
 func NewCmdExec(f util.AliCloudFactory, ioStreams genericclioptions.IOStreams) *cobra.Command {

@@ -6,7 +6,6 @@ import (
 	"strings"
 
 	"github.com/spf13/cobra"
-
 	apierrors "k8s.io/apimachinery/pkg/api/errors"
 	"k8s.io/apimachinery/pkg/api/meta"
 	utilerrors "k8s.io/apimachinery/pkg/util/errors"
@@ -18,6 +17,8 @@ import (
 	"k8s.io/kubectl/pkg/util/completion"
 	"k8s.io/kubectl/pkg/util/i18n"
 	"k8s.io/kubectl/pkg/util/templates"
+
+	"saectl/cmd/help"
 )
 
 var (
@@ -33,18 +34,18 @@ var (
 		will first check for an exact match on TYPE and NAME_PREFIX. If no such resource
 		exists, it will output details for every resource that has a name prefixed with NAME_PREFIX.`))
 
-	describeExample = templates.Examples(i18n.T(`
+	describeExample = templates.Examples(i18n.T(help.Wrapper(`
 		# Describe a pod
-		saectl describe pods/nginx
+		%s describe pods/nginx
 
 		# Describe a pod identified by type and name in "pod.json"
-		saectl describe -f pod.json
+		%s describe -f pod.json
 
 		# Describe all pods
-		saectl describe pods
+		%s describe pods
 
 		# Describe pods by label name=myLabel
-		saectl describe po -l name=myLabel`))
+		%s describe po -l name=myLabel`, 4)))
 )
 
 type DescribeOptions struct {

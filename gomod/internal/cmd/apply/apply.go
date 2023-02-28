@@ -6,7 +6,6 @@ import (
 	"net/http"
 
 	"github.com/spf13/cobra"
-
 	corev1 "k8s.io/api/core/v1"
 	"k8s.io/apimachinery/pkg/api/errors"
 	"k8s.io/apimachinery/pkg/api/meta"
@@ -30,6 +29,8 @@ import (
 	"k8s.io/kubectl/pkg/util/prune"
 	"k8s.io/kubectl/pkg/util/templates"
 	"k8s.io/kubectl/pkg/validation"
+
+	"saectl/cmd/help"
 )
 
 // ApplyFlags directly reflect the information that CLI is gathering via flags.  They will be converted to Options, which
@@ -123,18 +124,18 @@ var (
 
 		JSON and YAML formats are accepted.`))
 
-	applyExample = templates.Examples(i18n.T(`
+	applyExample = templates.Examples(i18n.T(help.Wrapper(`
 		# Apply the configuration in pod.json to a pod
-		saectl apply -f ./pod.json
+		%s apply -f ./pod.json
 
 		# Apply resources from a directory containing kustomization.yaml - e.g. dir/kustomization.yaml
-		saectl apply -k dir/
+		%s apply -k dir/
 
 		# Apply the JSON passed into stdin to a pod
-		cat pod.json | saectl apply -f -
+		cat pod.json | %s apply -f -
 
 		# Apply the configuration from all files that end with '.json' - i.e. expand wildcard characters in file names
-		saectl apply -f '*.json'`))
+		%s apply -f '*.json'`, 4)))
 
 	//warningNoLastAppliedConfigAnnotation = "Warning: resource %[1]s is missing the %[2]s annotation which is required by %[3]s apply. %[3]s apply should only be used on resources created declaratively by either %[3]s create --save-config or %[3]s apply. The missing annotation will be patched automatically.\n"
 	warningChangesOnDeletingResource = "Warning: Detected changes to resource %[1]s which is currently being deleted.\n"

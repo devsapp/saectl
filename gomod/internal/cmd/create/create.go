@@ -10,8 +10,6 @@ import (
 	"strings"
 
 	"github.com/spf13/cobra"
-	"k8s.io/klog/v2"
-
 	"k8s.io/apimachinery/pkg/api/meta"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/apis/meta/v1/unstructured"
@@ -21,6 +19,7 @@ import (
 	"k8s.io/cli-runtime/pkg/printers"
 	"k8s.io/cli-runtime/pkg/resource"
 	"k8s.io/client-go/dynamic"
+	"k8s.io/klog/v2"
 	"k8s.io/kubectl/pkg/cmd/create"
 	cmdutil "k8s.io/kubectl/pkg/cmd/util"
 	"k8s.io/kubectl/pkg/cmd/util/editor"
@@ -30,6 +29,8 @@ import (
 	"k8s.io/kubectl/pkg/util"
 	"k8s.io/kubectl/pkg/util/i18n"
 	"k8s.io/kubectl/pkg/util/templates"
+
+	"saectl/cmd/help"
 )
 
 // CreateOptions is the commandline options for 'create' sub command
@@ -61,15 +62,15 @@ var (
 
 		JSON and YAML formats are accepted.`))
 
-	createExample = templates.Examples(i18n.T(`
+	createExample = templates.Examples(i18n.T(help.Wrapper(`
 		# Create a deployment(represents an application in sae) using the data in .json
-		saectl create -f ./deployment.json
+		%s create -f ./deployment.json
 
 		# Create a deployment based on the JSON passed into stdin
-		cat deployment.json | saectl create -f -
+		cat deployment.json | %s create -f -
 
 		# Edit the data in registry.yaml in JSON then create the resource using the edited data
-		saectl create -f registry.yaml --edit -o json`))
+		%s create -f registry.yaml --edit -o json`, 3)))
 )
 
 // NewCreateOptions returns an initialized CreateOptions instance

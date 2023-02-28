@@ -24,8 +24,6 @@ import (
 
 	jsonpatch "github.com/evanphx/json-patch"
 	"github.com/spf13/cobra"
-	"k8s.io/klog/v2"
-
 	"k8s.io/apimachinery/pkg/api/meta"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/apis/meta/v1/unstructured/unstructuredscheme"
@@ -34,15 +32,17 @@ import (
 	utilerrors "k8s.io/apimachinery/pkg/util/errors"
 	"k8s.io/apimachinery/pkg/util/json"
 	"k8s.io/apimachinery/pkg/util/validation"
-
 	"k8s.io/cli-runtime/pkg/genericclioptions"
 	"k8s.io/cli-runtime/pkg/printers"
 	"k8s.io/cli-runtime/pkg/resource"
+	"k8s.io/klog/v2"
 	cmdutil "k8s.io/kubectl/pkg/cmd/util"
 	"k8s.io/kubectl/pkg/scheme"
 	"k8s.io/kubectl/pkg/util/completion"
 	"k8s.io/kubectl/pkg/util/i18n"
 	"k8s.io/kubectl/pkg/util/templates"
+
+	"saectl/cmd/help"
 )
 
 const (
@@ -99,25 +99,25 @@ var (
 		* If --overwrite is true, then existing labels can be overwritten, otherwise attempting to overwrite a label will result in an error.
 		* If --resource-version is specified, then updates will use this resource version, otherwise the existing resource-version will be used.`))
 
-	labelExample = templates.Examples(i18n.T(`
+	labelExample = templates.Examples(i18n.T(help.Wrapper(`
 		# Update pod 'foo' with the label 'unhealthy' and the value 'true'
-		saectl label pods foo unhealthy=true
+		%s label pods foo unhealthy=true
 
 		# Update pod 'foo' with the label 'status' and the value 'unhealthy', overwriting any existing value
-		saectl label --overwrite pods foo status=unhealthy
+		%s label --overwrite pods foo status=unhealthy
 
 		# Update all pods in the namespace
-		saectl label pods --all status=unhealthy
+		%s label pods --all status=unhealthy
 
 		# Update a pod identified by the type and name in "pod.json"
-		saectl label -f pod.json status=unhealthy
+		%s label -f pod.json status=unhealthy
 
 		# Update pod 'foo' only if the resource is unchanged from version 1
-		saectl label pods foo status=unhealthy --resource-version=1
+		%s label pods foo status=unhealthy --resource-version=1
 
 		# Update pod 'foo' by removing a label named 'bar' if it exists
 		# Does not require the --overwrite flag
-		saectl label pods foo bar-`))
+		%s label pods foo bar-`, 6)))
 )
 
 func NewLabelOptions(ioStreams genericclioptions.IOStreams) *LabelOptions {
@@ -160,7 +160,7 @@ func NewCmdLabel(f cmdutil.Factory, ioStreams genericclioptions.IOStreams) *cobr
 	cmd.Flags().StringVar(&o.resourceVersion, "resource-version", o.resourceVersion, i18n.T("If non-empty, the labels update will only succeed if this is the current resource-version for the object. Only valid when specifying a single resource."))
 	usage := "identifying the resource to update the labels"
 	cmdutil.AddFilenameOptionFlags(cmd, &o.FilenameOptions, usage)
-	//cmdutil.AddDryRunFlag(cmd)
+	cmdutil.AddDryRunFlag(cmd)
 	//cmdutil.AddFieldManagerFlagVar(cmd, &o.fieldManager, "kubectl-label")
 	cmdutil.AddLabelSelectorFlagVar(cmd, &o.selector)
 
