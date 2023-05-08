@@ -85,7 +85,11 @@ func (g *guardStdOut) Read(p []byte) (n int, err error) {
 		g.stop <- struct{}{}
 		return 0, io.EOF
 	}
-	return n, err
+	if err != nil {
+		g.stop <- struct{}{}
+		return 0, io.EOF
+	}
+	return n, nil
 }
 
 type guardStdIn struct {
