@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"encoding/base64"
 	"encoding/json"
+	"fmt"
 	"io"
 	"net/http"
 
@@ -106,7 +107,7 @@ type HttpResponseInjector struct {
 func (r HttpResponseInjector) ApplyToResponse(response *http.Response) error {
 	out := new(output)
 	if err := out.unmarshal(r.GetHttpContentBytes()); err != nil {
-		return err
+		return fmt.Errorf("fail to decode responses from sae, response: %s", string(r.GetHttpContentBytes()))
 	}
 	response.Header = out.Header
 	response.StatusCode = out.Code
